@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Holiday Magic</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Times+New+Roman&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --gold: #d4af37;
+            --cream: #fceea7;
+            --bg: #000000;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg);
+            overflow: hidden;
+            font-family: 'Times New Roman', serif;
+            color: var(--gold);
+            user-select: none;
+        }
+
+        /* Static Layer (Title) - Always Visible */
+        #static-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            pointer-events: none;
+            z-index: 15;
+        }
+
+        /* Controls Layer - Toggleable - Left Edge Centered */
+        #controls-layer {
+            position: absolute;
+            top: 50%;
+            left: 40px; /* Moved to left edge with some margin */
+            transform: translateY(-50%); /* Vertically centered only */
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 20;
+            transition: opacity 0.5s ease;
+            align-items: flex-start; /* Left align the buttons */
+        }
+
+        .ui-hidden {
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+
+        /* Title */
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 56px;
+            text-align: center;
+            margin-top: 40px; 
+            background: linear-gradient(to bottom, #ffffff, var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+            letter-spacing: 2px;
+            width: 100%;
+        }
+
+        /* Buttons */
+        .btn-control {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 12px 30px;
+            font-family: 'Cinzel', serif;
+            font-size: 14px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            text-align: center;
+            justify-content: center;
+            min-width: 200px;
+            display: flex;
+            align-items: center;
+            pointer-events: auto;
+        }
+
+        .btn-control:hover {
+            background: rgba(212, 175, 55, 0.2);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+            transform: translateX(10px); /* Slide out slightly on hover */
+            border-color: #fff;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Loader */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(212, 175, 55, 0.3);
+            border-top: 3px solid var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .loading-text {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            font-size: 14px;
+            letter-spacing: 3px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Invisible Webcam Container */
+        #webcam-container {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            opacity: 0; 
+            pointer-events: none;
+            display: flex;
+        }
+        
+        /* Footer Credit */
+        #footer-credit {
+            position: fixed;
+            bottom: 15px;
+            right: 20px;
+            color: #ff4d4d; 
+            font-family: 'Cinzel', serif;
+            font-size: 14px;
+            font-weight: 700;
+            z-index: 25;
+            pointer-events: none;
+            letter-spacing: 1px;
+            text-shadow: 0 0 12px rgba(255, 77, 77, 0.4);
+            opacity: 0.9;
+        }
+    </style>
+
+    <!-- Import Map -->
+    <script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+    "@mediapipe/tasks-vision": "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/+esm",
+    "three/": "https://esm.sh/three@^0.182.0/",
+    "react": "https://esm.sh/react@^19.2.3"
+  }
+}
+</script>
+</head>
+<body>
+
+    <!-- Loader -->
+    <div id="loader">
+        <div class="spinner"></div>
+        <div class="loading-text">LOADING MAGIC</div>
+    </div>
+
+    <!-- Static Layer (Title) -->
+    <div id="static-layer">
+        <h1>Merry Christmas</h1>
+    </div>
+
+    <!-- Controls Layer (Buttons) -->
+    <div id="controls-layer">
+        <button class="btn-control" id="btn-start">Start Magic</button>
+        <button class="btn-control" id="btn-reset">Reset View</button>
+        <button class="btn-control" id="btn-upload">Add Memories</button>
+        <button class="btn-control" id="btn-music">Set Music</button>
+        <input type="file" id="file-input" accept="image/*">
+        <input type="file" id="music-input" accept="audio/*">
+    </div>
+
+    <!-- Webcam (Hidden) -->
+    <div id="webcam-container">
+        <video id="webcam" autoplay playsinline></video>
+        <canvas id="cv-canvas" width="160" height="120"></canvas>
+    </div>
+    
+    <!-- Footer Credit -->
+    <div id="footer-credit">By yuanbin based Google.aistudio</div>
+
+    <script type="module" src="./index.tsx"></script>
+</body>
+</html>
