@@ -41,14 +41,14 @@
         #controls-layer {
             position: absolute;
             top: 50%;
-            left: 40px; /* Moved to left edge with some margin */
-            transform: translateY(-50%); /* Vertically centered only */
+            left: 40px;
+            transform: translateY(-50%);
             display: flex;
             flex-direction: column;
             gap: 20px;
             z-index: 20;
             transition: opacity 0.5s ease;
-            align-items: flex-start; /* Left align the buttons */
+            align-items: flex-start;
         }
 
         .ui-hidden {
@@ -94,7 +94,7 @@
         .btn-control:hover {
             background: rgba(212, 175, 55, 0.2);
             box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
-            transform: translateX(10px); /* Slide out slightly on hover */
+            transform: translateX(10px);
             border-color: #fff;
         }
 
@@ -167,33 +167,29 @@
         }
     </style>
 
-    <!-- Import Map -->
     <script type="importmap">
 {
   "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+    "three": "https://esm.sh/three@0.160.0",
+    "three/addons/": "https://esm.sh/three@0.160.0/examples/jsm/",
     "@mediapipe/tasks-vision": "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/+esm",
-    "three/": "https://esm.sh/three@^0.182.0/",
-    "react": "https://esm.sh/react@^19.2.3"
+    "react": "https://esm.sh/react@19.0.0",
+    "three/": "https://esm.sh/three@^0.182.0/"
   }
 }
 </script>
 </head>
 <body>
 
-    <!-- Loader -->
     <div id="loader">
         <div class="spinner"></div>
-        <div class="loading-text">LOADING MAGIC</div>
+        <div class="loading-text" id="loader-msg">LOADING MAGIC</div>
     </div>
 
-    <!-- Static Layer (Title) -->
     <div id="static-layer">
         <h1>Merry Christmas</h1>
     </div>
 
-    <!-- Controls Layer (Buttons) -->
     <div id="controls-layer">
         <button class="btn-control" id="btn-start">Start Magic</button>
         <button class="btn-control" id="btn-reset">Reset View</button>
@@ -203,13 +199,11 @@
         <input type="file" id="music-input" accept="audio/*">
     </div>
 
-    <!-- Webcam (Hidden) -->
     <div id="webcam-container">
         <video id="webcam" autoplay playsinline></video>
         <canvas id="cv-canvas" width="160" height="120"></canvas>
     </div>
     
-    <!-- Footer Credit -->
     <div id="footer-credit">By yuanbin based Google.aistudio</div>
 
     <script type="module" src="./index.tsx"></script>
